@@ -27,7 +27,7 @@ void displaySales(Team teams[TEAMS_NO], int teamNumber);
 void showAverage(Team teams[TEAMS_NO]);
 void saveToFile(Team teams[TEAMS_NO]);
 
-int main()
+int main() // mike W
 {
     // for my switch case
     enum{MENU = 'M', TEAM1 = 'F', TEAM2 = 'S', DISPLAYAVG = 'A', EXIT = 'E' };
@@ -90,7 +90,7 @@ int main()
 }
 
 
-void MenuOption() {
+void MenuOption() { // mike W (part of main and display)
     // looping through stings for the menu options
     string options[5]{ "Show menu options press 'M'", "Display Team 1 Sales 'F'",
         "Display Team 2 Sales 'S'", "Display the which team has the highest average press 'A'", "To exit press 'E'"};
@@ -100,7 +100,7 @@ void MenuOption() {
     cout << endl;
 }
 
-void Banner() {
+void Banner() { // Mike W (part of main and display
     // setting up the size of my fille
     int starsRows(32);
     int writingStars(4);
@@ -112,7 +112,7 @@ void Banner() {
         << setw(starsRows) << "" << endl << endl;
 }
 
-bool GetTeam1(Team Teams[TEAMS_NO])
+bool GetTeam1(Team Teams[TEAMS_NO]) // Michael Coles
 {
     int OverallTotalTeam1 = { 0 };
     int Team1Avg = { 0 };
@@ -156,7 +156,7 @@ bool GetTeam1(Team Teams[TEAMS_NO])
     return true;
 };
 
-void GetTeam2(Team teams[TEAMS_NO])
+void GetTeam2(Team teams[TEAMS_NO]) // Thuysongnguyen Tran
 {
     // A. LOADING TEAM 2
     cout << endl << "Please enter the information for Team 2's members below." << endl << endl;
@@ -197,7 +197,7 @@ void GetTeam2(Team teams[TEAMS_NO])
 
 }
 
-void displaySales(Team teams[TEAMS_NO], int teamNumber) {
+void displaySales(Team teams[TEAMS_NO], int teamNumber) { // mike w combined with parts take from code written by Michael cole and sonia to make a single function
    
     // set a banner
     cout <<setfill('*') << setw(20) << right << " " << "Sales Comparsion Program" << setw(20) << left << " " << endl << endl;
@@ -228,7 +228,7 @@ void displaySales(Team teams[TEAMS_NO], int teamNumber) {
         cout << "" << teams[teamNumber].Totals[r] << endl << endl;
     }
 }
-void showAverage(Team teams[TEAMS_NO]) {
+void showAverage(Team teams[TEAMS_NO]) { // mike w combined with parts take from code written by Michael cole and sonia to make a single function
     // two local variables
     string highest;
     int teamNum;
@@ -251,7 +251,7 @@ void showAverage(Team teams[TEAMS_NO]) {
     cout << "The highest average selling tean is " << highest << " with an average of sales of :$ "<< teams[teamNum].Average << endl;
 
 }
-void saveToFile(Team teams[TEAMS_NO]) {
+void saveToFile(Team teams[TEAMS_NO]) { // mike w part of display but take from code written by Michael and sonia and combined
     ofstream outFile;
 
     string highest;
@@ -297,7 +297,7 @@ void saveToFile(Team teams[TEAMS_NO]) {
         teamNum = 1;
     }
     // showing the highest value
-    outFile << "The highest average selling tean is " << highest << " with an average of sales of $" << teams[teamNum].Average << endl;
+    outFile << "The highest average selling tean is " << highest << " with an average of sales of $" << teams[teamNum].Average << endl << endl;
    
     outFile.close();
 }
