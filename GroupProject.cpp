@@ -25,6 +25,7 @@ bool GetTeam1 (Team teams[TEAMS_NO]);
 void GetTeam2(Team teams[TEAMS_NO]);
 void displaySales(Team teams[TEAMS_NO], int teamNumber);
 void showAverage(Team teams[TEAMS_NO]);
+void saveToFile(Team teams[TEAMS_NO]);
 
 int main()
 {
@@ -75,6 +76,7 @@ int main()
             break;
         case(EXIT):
             cout << "Thank you." << endl;
+            saveToFile(Teams);
             loopFlag = false;
             break;
         default:
@@ -193,45 +195,6 @@ void GetTeam2(Team teams[TEAMS_NO])
     // Calculating the average for the whole team
     teams[1].Average = OverallTotalTeam2 / ROWS;
 
-    // B. PRINTING TEAM 2
-
-    // Finding the member with the longest name
-  /*  int max = 0;
-    for (int i = 0; i < ROWS; i++)
-    {
-        if (teams[1].Names[i].length() >= teams[0].Names[i].length())
-        {
-            max = teams[1].Names[i].length();
-        }
-    }
-
-    // Outer loop
-    for (int iTeam2Index = 0; iTeam2Index < ROWS; iTeam2Index++)
-    {
-        // This constant needs to be greater than the member's longest name
-        const size_t MAX_DOT_LEN = max + 1;
-
-        // Calculate the length of the dots needed. 
-        // It will be a function of the member's name length.
-        const size_t dotLen1 = MAX_DOT_LEN - teams[1].Names[iTeam2Index].length();
-        cout << teams[1].Names[iTeam2Index] << setfill('.') << setw(dotLen1) << '.';
-
-        // Inner loop
-        for (int iScoreIndex = 0; iScoreIndex < COLS; iScoreIndex++)
-        {
-            int score = teams[1].Scores[iTeam2Index][iScoreIndex];
-
-            // Calculate the length of the dots needed.
-            // It will be a function of the member's score length.
-           // const size_t dotLen2 = MAX_DOT_LEN - to_string(score).length();
-            //cout << setw(dotLen2) << setfill('.') << '.' << score;
-        } // End Inner loop
-
-        cout << endl;
-    } // end Outer loop
-    */
-   // cout << "The Overall Total for Team 2 is " << OverallTotalTeam2 << "." << endl;
-   // cout << "The Overall Average for Team 2 is " << Team2Avg << "." << endl << endl;
 }
 
 void displaySales(Team teams[TEAMS_NO], int teamNumber) {
@@ -287,4 +250,54 @@ void showAverage(Team teams[TEAMS_NO]) {
     // showing the highest value
     cout << "The highest average selling tean is " << highest << " with an average of sales of :$ "<< teams[teamNum].Average << endl;
 
+}
+void saveToFile(Team teams[TEAMS_NO]) {
+    ofstream outFile;
+
+    string highest;
+    int teamNum;
+    outFile.open("salesdata.txt");
+    // set a banner
+    outFile << setfill('*') << setw(20) << right << " " << "Sales Comparsion Program" << setw(20) << left << " " << endl << endl;
+    outFile << setfill('.');
+    for (int x = 0; x < TEAMS_NO; x++) {
+        outFile << setw(15) << left << "Name";
+        // display the weeks with a loop
+        for (int i = 1; i < 5; i++) {
+            outFile << "week" << i << setw(6) << left << "";
+        }
+        // display the total
+        outFile << "Total" << endl;
+        // set seprator
+        outFile << setfill('-') << setw(66) << "" << endl;
+        outFile << setfill('.');
+        // star with the teams
+        for (int r = 0; r < ROWS; r++)
+        {
+            outFile << setfill('.') << setw(15) << left << teams[x].Names[r] << "$";
+
+            // go through the team members weekly score then display them the 
+            for (int c = 0; c < COLS; c++)
+            {
+                outFile << left << setw(10) << teams[x].Scores[r][c] << right << "$";
+            };
+            // show the total sales for the team member
+            outFile << "" << teams[x].Totals[r] << endl << endl;
+        }
+        outFile << "The average for team " << x + 1 << " is $ : " << teams[x].Average << endl;
+    }
+
+    // if else statement to get highest value and teamNum values
+    if (teams[0].Average > teams[1].Average) {
+        highest = "Team 1";
+        teamNum = 0;
+    }
+    else {
+        highest = "Team 2";
+        teamNum = 1;
+    }
+    // showing the highest value
+    outFile << "The highest average selling tean is " << highest << " with an average of sales of $" << teams[teamNum].Average << endl;
+   
+    outFile.close();
 }
