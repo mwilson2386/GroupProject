@@ -4,39 +4,51 @@
 
 using namespace std;
 
-//truct teams {
-   // string employeeName[4]; // we store the emoplyees names here. 
-   // double employeeSales[4]; // store the that employees sale here
-   // double totalTeamWeekSales[4]; // add the weekly sales here for all employees and save them. 
-//};
+// 3 const int that will show up all program
 const int ROWS = 3;
 const int COLS = 4;
+const int TEAMS_NO = 2;
 
+
+// setting up our structure
 struct Team {
     string Names[ROWS] = {};
     int Scores[ROWS][COLS] = {};
     int Totals[ROWS] = {};
+    int Average = {};
 };
 
 // prototypes
 void MenuOption();
 void Banner();
-int GetTeam1(Team Teams[2]);
+bool GetTeam1 (Team teams[TEAMS_NO]);
+void GetTeam2(Team teams[TEAMS_NO]);
+void displaySales(Team teams[TEAMS_NO], int teamNumber);
+void showAverage(Team teams[TEAMS_NO]);
 
 int main()
 {
     // for my switch case
-    enum{MENU = 'M', TEAM1 = 'F', TEAM2 = 'S', DISPLAY = 'D', EXIT = 'E' };
-
+    enum{MENU = 'M', TEAM1 = 'F', TEAM2 = 'S', DISPLAYAVG = 'A', EXIT = 'E' };
+    // using to pass as a variable later
+    int teamNumber = 0;
+    string result;
     bool loopFlag = true; // for my do while loop.
     char userChoice; // user input
    // teams teamNum[2];// creating each team
-    Team Teams[2];
+    Team Teams[TEAMS_NO];
     
     // call my opening of the program
     Banner();
-    MenuOption();
+    // creating the result of simple if then statement
+    result = (GetTeam1(Teams) == true) ? "Team 1 Data loaded!" : "Data File did not load. Please exit and try again";
+    cout << result << endl;
 
+    // get team data
+    GetTeam2(Teams);
+
+    // start with the menu options
+    MenuOption();
     // do while loop
     do {
         // get user input
@@ -51,13 +63,15 @@ int main()
             MenuOption();
             break;
         case(TEAM1):
-            GetTeam1(Teams);
+            teamNumber = 0;
+            displaySales(Teams, teamNumber);
             break;
         case(TEAM2):
-
+            teamNumber = 1;
+            displaySales(Teams, teamNumber);
             break;
-        case(DISPLAY):
-
+        case(DISPLAYAVG):
+            showAverage(Teams);
             break;
         case(EXIT):
             cout << "Thank you." << endl;
@@ -76,8 +90,8 @@ int main()
 
 void MenuOption() {
     // looping through stings for the menu options
-    string options[5]{ "Show menu options press 'M'", "Load in team 1 data press 'F'",
-        "Load in team 2 data press 'S'", "Display the who has the highest average press 'D'", "To exit press 'E'"};
+    string options[5]{ "Show menu options press 'M'", "Display Team 1 Sales 'F'",
+        "Display Team 2 Sales 'S'", "Display the which team has the highest average press 'A'", "To exit press 'E'"};
     for (string i : options) {
         cout << i << endl;
     }
@@ -96,7 +110,7 @@ void Banner() {
         << setw(starsRows) << "" << endl << endl;
 }
 
-int GetTeam1(Team Teams[2])
+bool GetTeam1(Team Teams[TEAMS_NO])
 {
     int OverallTotalTeam1 = { 0 };
     int Team1Avg = { 0 };
@@ -105,7 +119,8 @@ int GetTeam1(Team Teams[2])
     my_file.open("Team1Scores.txt");
     if (!my_file) {
         cout << "File Not Found";
-        return (-1);
+        my_file.close();
+        return false;
     }
     for (int r = 0; r < ROWS; r++)
     {
@@ -130,27 +145,146 @@ int GetTeam1(Team Teams[2])
         OverallTotalTeam1 += Teams[0].Totals[r];
     }
 
-    Team1Avg = OverallTotalTeam1 / ROWS;
+    Teams[0].Average = OverallTotalTeam1 / ROWS;
 
-    //Code to Display Results below this Comment.....
-    for (int r = 0; r < ROWS; r++)
-    {
-        cout << Teams[0].Names[r] << " ";
-
-
-        for (int c = 0; c < COLS; c++)
-        {
-
-            cout << Teams[0].Scores[r][c] << " ";
-
-
-        };
-        cout << Teams[0].Totals[r] << endl;
-
-    };
-    cout << "The total for Team 1 is: " << OverallTotalTeam1 << endl;
-    cout << "The Overall Average for Team 1 is " << Team1Avg << endl;
+   // cout << "The total for Team 1 is: " << OverallTotalTeam1 << endl;
+   // cout << "The Overall Average for Team 1 is " << Team1Avg << endl;
 
     my_file.close();
-    return (Team1Avg);
+    return true;
 };
+
+void GetTeam2(Team teams[TEAMS_NO])
+{
+    // A. LOADING TEAM 2
+    cout << endl << "Please enter the information for Team 2's members below." << endl << endl;
+    // Variables
+    string names;
+    int OverallTotalTeam2 = 0;
+    int Team2Avg = 0;
+    // Outer loop
+    for (int i = 0; i < ROWS; i++)
+    {
+        // Prompting for names
+        cout << "MEMBER " << i + 1 << "." << endl;
+        cout << "Name: ";
+        cin >> teams[1].Names[i];
+
+        // // Reset the total after each row
+       // teams[1].Totals[i] = 0;
+
+        // Inner loop
+        for (int j = 0; j < COLS; j++)
+        {
+            // Prompting for scores
+            cout << "Week " << j + 1 << ": ";
+            cin >> teams[1].Scores[i][j];
+
+            // Calculating the total for each member
+            teams[1].Totals[i] += teams[1].Scores[i][j];
+
+        } // end inner loop
+
+        // Calculating the total for the whole team
+        OverallTotalTeam2 += teams[1].Totals[i];
+
+        cout << endl;
+    } // end outer loop
+    // Calculating the average for the whole team
+    teams[1].Average = OverallTotalTeam2 / ROWS;
+
+    // B. PRINTING TEAM 2
+
+    // Finding the member with the longest name
+  /*  int max = 0;
+    for (int i = 0; i < ROWS; i++)
+    {
+        if (teams[1].Names[i].length() >= teams[0].Names[i].length())
+        {
+            max = teams[1].Names[i].length();
+        }
+    }
+
+    // Outer loop
+    for (int iTeam2Index = 0; iTeam2Index < ROWS; iTeam2Index++)
+    {
+        // This constant needs to be greater than the member's longest name
+        const size_t MAX_DOT_LEN = max + 1;
+
+        // Calculate the length of the dots needed. 
+        // It will be a function of the member's name length.
+        const size_t dotLen1 = MAX_DOT_LEN - teams[1].Names[iTeam2Index].length();
+        cout << teams[1].Names[iTeam2Index] << setfill('.') << setw(dotLen1) << '.';
+
+        // Inner loop
+        for (int iScoreIndex = 0; iScoreIndex < COLS; iScoreIndex++)
+        {
+            int score = teams[1].Scores[iTeam2Index][iScoreIndex];
+
+            // Calculate the length of the dots needed.
+            // It will be a function of the member's score length.
+           // const size_t dotLen2 = MAX_DOT_LEN - to_string(score).length();
+            //cout << setw(dotLen2) << setfill('.') << '.' << score;
+        } // End Inner loop
+
+        cout << endl;
+    } // end Outer loop
+    */
+   // cout << "The Overall Total for Team 2 is " << OverallTotalTeam2 << "." << endl;
+   // cout << "The Overall Average for Team 2 is " << Team2Avg << "." << endl << endl;
+}
+
+void displaySales(Team teams[TEAMS_NO], int teamNumber) {
+   
+    // set a banner
+    cout <<setfill('*') << setw(20) << right << " " << "Sales Comparsion Program" << setw(20) << left << " " << endl << endl;
+    cout << setfill('.');
+
+    // set the output statement looading top information
+    cout << setw(15) << left << "Name";
+    // display the weeks with a loop
+    for (int i = 1; i < 5; i++) {
+        cout << "week" << i << setw(6) << left << "";
+    }
+    // display the total
+    cout << "Total" << endl;
+    // set seprator
+    cout << setfill('-') << setw(66) << "" << endl;
+    cout << setfill('.');
+    // star with the teams
+    for (int r = 0; r < ROWS; r++)
+    {
+        cout <<setfill ('.') << setw(15) << left << teams[teamNumber].Names[r] << "$";
+
+        // go through the team members weekly score then display them the 
+        for (int c = 0; c < COLS; c++)
+        {
+            cout << left << setw(10) << teams[teamNumber].Scores[r][c] << right << "$";
+        };
+        // show the total sales for the team member
+        cout << "" << teams[teamNumber].Totals[r] << endl << endl;
+    }
+}
+void showAverage(Team teams[TEAMS_NO]) {
+    // two local variables
+    string highest;
+    int teamNum;
+
+    // for loop for same line
+    for (int i = 0; i < TEAMS_NO; i++) {
+
+        cout << "The average for team " << i + 1 << " is $ : " << teams[i].Average << endl;
+    }
+    // if else statement to get highest value and teamNum values
+    if (teams[0].Average > teams[1].Average) {
+        highest = "Team 1";
+        teamNum = 0;
+    }
+    else {
+        highest = "Team 2";
+        teamNum = 1;
+    }
+    // showing the highest value
+    cout << "The highest average selling tean is " << highest << " with an average of sales of :$ "<< teams[teamNum].Average << endl;
+
+}
